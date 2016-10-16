@@ -1,0 +1,19 @@
+package org.drools.workshop;
+
+import org.drools.workshop.model.Person;
+import org.drools.workshop.model.Person.Employment;
+import java.util.List;
+import org.drools.workshop.service.*;
+
+global ReportService reportService;
+
+declare PersonWithIdentityOK
+    person: Person @key
+end
+
+rule "Person with cell phone"
+    when
+        $p: PersonWithIdentityOK($p.person.phoneNumber != null, $p.person.phoneNumber.startsWith("13"))
+    then
+        reportService.notify($p.getPerson().getName() + " - 手机号符合要求");
+end

@@ -1,0 +1,44 @@
+package org.drools.workshop;
+
+import org.drools.workshop.model.Person;
+import org.drools.workshop.model.Person.Employment;
+import java.util.List;
+import org.drools.workshop.service.*;
+
+global ReportService reportService;
+
+declare PersonWithAgeOK
+    person: Person @key
+end
+
+declare PersonWithEmploymentOK
+    person: Person @key
+end
+
+declare PersonWithIdentityOK
+    person: Person @key
+end
+
+rule "Person with age between 20 and 50"
+    when
+        $p: Person(age >= 20, age <= 50)
+    then
+        reportService.notify($p.getName() + " - 居住地符合要求");
+        insert(new PersonWithAgeOK($p));
+end
+
+rule "Person who is white color"
+    when
+        $pWithAgeOK: PersonWithAgeOK(person.employment == Employment.WhiteColor)
+    then
+        reportService.notify($pWithAgeOK.getPerson().getName() + " -- 居住地和职业符合要求");
+        insert(new PersonWithEmploymentOK($pWithAgeOK.getPerson()));
+end
+
+rule "Person who is local resident"
+    when
+        $pWithEmploymentOK: PersonWithEmploymentOK(person.localResident)
+    then
+        reportService.notify($pWithEmploymentOK.getPerson().getName() + " --- 身份符合要求： " + $pWithEmploymentOK.getPerson());
+        insert(new PersonWithIdentityOK($pWithEmploymentOK.getPerson()));
+end

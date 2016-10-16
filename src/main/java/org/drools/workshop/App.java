@@ -1,5 +1,8 @@
 package org.drools.workshop;
 
+import org.drools.workshop.model.Person;
+import org.drools.workshop.service.DataProviderService;
+import org.drools.workshop.service.ReportService;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.kie.api.cdi.KSession;
@@ -13,15 +16,24 @@ import javax.inject.Inject;
 public class App {
 
     @Inject
-    @KSession
+    @KSession("p2pKSession")
     private KieSession kSession;
 
-    public void bootstrapDrools() {
-        // The KieSession was injected so we can use it now
-        kSession.insert("Hi There!");
-        int rulesFired = kSession.fireAllRules();
-        System.out.println(">>> Rules Fired: " + rulesFired);
+    @Inject
+    private ReportService reportService;
 
+    @Inject
+    private DataProviderService dataProviderService;
+
+    private void bootstrapDrools() {
+
+        kSession.setGlobal("reportService", reportService);
+        // The KieSession was injected so we can use it now
+        for (Person p : dataProviderService.getPersons()) {
+            kSession.insert(p);
+        }
+        int rulesFired = kSession.fireAllRules();
+        System.out.println(">>> 总计执行规则次数: " + rulesFired);
 
     }
 
