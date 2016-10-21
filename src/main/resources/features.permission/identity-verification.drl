@@ -7,15 +7,15 @@ import org.drools.workshop.service.*;
 
 global ReportService reportService;
 
-declare PersonWithAgeOK
+declare AgeIsValid
     person: Person @key
 end
 
-declare PersonWithEmploymentOK
+declare EmploymentIsValid
     person: Person @key
 end
 
-declare PersonWithIdentityOK
+declare IdentityIsValid
     person: Person @key
 end
 
@@ -24,21 +24,21 @@ rule "Person with age between 20 and 50"
         $p: Person(age >= 20, age <= 50)
     then
         reportService.notify($p.getName() + " - 居住地符合要求");
-        insert(new PersonWithAgeOK($p));
+        insertLogical(new AgeIsValid($p));
 end
 
 rule "Person who is white color"
     when
-        $pWithAgeOK: PersonWithAgeOK(person.employment == Employment.WhiteColor)
+        $pWithAgeOK: AgeIsValid(person.employment == Employment.WhiteColor)
     then
         reportService.notify($pWithAgeOK.getPerson().getName() + " -- 居住地和职业符合要求");
-        insert(new PersonWithEmploymentOK($pWithAgeOK.getPerson()));
+        insertLogical(new EmploymentIsValid($pWithAgeOK.getPerson()));
 end
 
 rule "Person who is local resident"
     when
-        $pWithEmploymentOK: PersonWithEmploymentOK(person.localResident)
+        $pWithEmploymentOK: EmploymentIsValid(person.localResident)
     then
         reportService.notify($pWithEmploymentOK.getPerson().getName() + " --- 身份符合要求： " + $pWithEmploymentOK.getPerson());
-        insert(new PersonWithIdentityOK($pWithEmploymentOK.getPerson()));
+        insertLogical(new IdentityIsValid($pWithEmploymentOK.getPerson()));
 end

@@ -7,13 +7,13 @@ import org.drools.workshop.service.*;
 
 global ReportService reportService;
 
-declare PersonWithIdentityOK
+declare IdentityIsValid
     person: Person @key
 end
 
 rule "Person with cell phone"
     when
-        $p: PersonWithIdentityOK($p.person.phoneNumber != null, $p.person.phoneNumber.startsWith("13"))
+        $p: IdentityIsValid($p.person.phoneNumber != null, $p.person.phoneNumber.startsWith("13"))
     then
-        reportService.notify($p.getPerson().getName() + " - 手机号符合要求");
+        reportService.notify($p.getPerson().getName() + " ==> 用户符合准入要求");
 end

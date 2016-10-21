@@ -5,7 +5,9 @@ import org.drools.workshop.service.DataProviderService;
 import org.drools.workshop.service.ReportService;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
+import org.kie.api.KieServices;
 import org.kie.api.cdi.KSession;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 import javax.inject.Inject;
@@ -26,6 +28,9 @@ public class App {
     private DataProviderService dataProviderService;
 
     private void bootstrapDrools() {
+
+//        KieServices kieServices = KieServices.Factory.get();
+//        KieContainer kContainer = kieServices.newKieContainer();
 
         kSession.setGlobal("reportService", reportService);
         // The KieSession was injected so we can use it now
