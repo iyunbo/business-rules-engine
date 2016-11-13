@@ -1,0 +1,14 @@
+package org.drools.workshop;
+
+import java.util.List;
+import com.digcredit.decisionengine.model.*
+import org.drools.workshop.service.*;
+
+global ReportService reportService;
+
+rule "当申请人被拒绝时输出结果"
+    when
+        $r : Rejection($applicant : Applicant)
+    then
+        reportService.notify($applicant.getApplicantName() + "有不良纪录，原因： " + $r.getReason());
+end

@@ -1,0 +1,41 @@
+package org.drools.workshop;
+
+import java.util.List;
+import com.digcredit.decisionengine.model.*;
+import com.digcredit.decisionengine.model.CreditCard.Status;
+
+rule "当前逾期金额大于1000元且大于信用额度的30%"
+    when
+        $applicant : Applicant( $creditCards : creditCards, accountStatus ==  Applicant.Status.正常)
+        CreditCard( overdueAmount >= 1000.0, overdueAmount >= 0.3 * creditAmount ) from $creditCards
+    then
+        modify( $applicant ) { setAccountStatus( Applicant.Status.不良 ) };
+        insert(new Rejection($applicant, "当前逾期金额大于1000元且大于信用额度的30%"));
+end
+
+rule "当前逾期2期以上且逾期金额大于450元"
+    when
+        $applicant : Applicant( $creditCards : creditCards, accountStatus ==  Applicant.Status.正常)
+        CreditCard( overduePeriods >= 2, overdueAmount >= 450.0 ) from $creditCards
+    then
+        modify( $applicant ) { setAccountStatus( Applicant.Status.不良 ) };
+        insert(new Rejection($applicant, "当前逾期2期以上且逾期金额大于450元"));
+end
+
+rule "信用卡账户状态为：呆账 、核销"
+    when
+        $applicant : Applicant( $creditCards : creditCards, accountStatus ==  Applicant.Status.正常)
+        CreditCard( accountStatus ==  Status.呆账 || accountStatus == Status.核销) from $creditCards
+    then
+        modify( $applicant ) { setAccountStatus( Applicant.Status.不良 ) };
+        insert(new Rejection($applicant, "信用卡账户状态为：呆账 、核销"));
+end
+
+rule "信用卡账户状态为:冻结或止付，且“最大负债额”栏位大于450元"
+    when
+        $applicant : Applicant( $creditCards : creditCards, accountStatus ==  Applicant.Status.正常)
+        CreditCard( accountStatus ==  Status.冻结 || accountStatus == Status.止付, maxDebtAmount >= 450.0) from $creditCards
+    then
+        modify( $applicant ) { setAccountStatus( Applicant.Status.不良 ) };
+        insert(new Rejection($applicant, "信用卡账户状态为:冻结或止付，且“最大负债额”栏位大于450元"));
+end

@@ -1,0 +1,26 @@
+package org.drools.workshop;
+
+import java.util.List;
+import com.digcredit.decisionengine.model.*
+
+rule "当前账户正常且有正常房贷申请人近12个月最大逾期4期及以上"
+    when
+        $applicant : Applicant( $loans : loans, $creditCards : creditCards, accountStatus ==  Applicant.Status.正常)
+        not Rejection(applicant == $applicant)
+        Loan(loanType == "房贷") from $loans
+        CreditCard(maxOverdueTimes12Mon >= 4) from $creditCards
+    then
+        modify( $applicant ) { setAccountStatus( Applicant.Status.不良 ) };
+        insert(new Rejection($applicant, "当前账户正常且有正常房贷申请人近12个月最大逾期4期及以上"));
+end
+
+rule "当前账户正常且无正常房贷申请人近12个月最大逾期3期及以上"
+    when
+        $applicant : Applicant( $loans : loans, $creditCards : creditCards, accountStatus ==  Applicant.Status.正常)
+        not Rejection(applicant == $applicant)
+        not Loan(loanType == "房贷") from $loans
+        CreditCard(maxOverdueTimes12Mon >= 3) from $creditCards
+    then
+        modify( $applicant ) { setAccountStatus( Applicant.Status.不良 ) };
+        insert(new Rejection($applicant, "当前账户正常且无正常房贷申请人近12个月最大逾期3期及以上"));
+end
