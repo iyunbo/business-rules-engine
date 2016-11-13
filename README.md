@@ -8,4 +8,4 @@
 
 执行
 
-`"`mvn exec:java -Dexec.mainClass="com.digcredit.decisionengine.CreditCardVerification
+`mvn exec:java -Dexec.mainClass="com.digcredit.decisionengine.CreditCardVerification`
