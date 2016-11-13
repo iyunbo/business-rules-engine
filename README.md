@@ -8,4 +8,4 @@
 
 执行
 
-`mvn exec:java -Dexec.mainClass="org.drools.workshop.App"`
+`"`mvn exec:java -Dexec.mainClass="com.digcredit.decisionengine.CreditCardVerification
