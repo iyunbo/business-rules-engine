@@ -4,6 +4,7 @@ import java.util.List;
 import com.digcredit.decisionengine.model.*
 
 rule "当前账户正常且有正常房贷申请人近12个月最大逾期4期及以上"
+    salience -10
     when
         $applicant : Applicant( $loans : loans, $creditCards : creditCards, accountStatus ==  Applicant.Status.正常)
         not Rejection(applicant == $applicant)
@@ -15,6 +16,7 @@ rule "当前账户正常且有正常房贷申请人近12个月最大逾期4期�
 end
 
 rule "当前账户正常且无正常房贷申请人近12个月最大逾期3期及以上"
+    salience -10
     when
         $applicant : Applicant( $loans : loans, $creditCards : creditCards, accountStatus ==  Applicant.Status.正常)
         not Rejection(applicant == $applicant)
