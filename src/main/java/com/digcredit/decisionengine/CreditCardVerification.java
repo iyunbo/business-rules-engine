@@ -3,7 +3,7 @@ package com.digcredit.decisionengine;
 import com.digcredit.decisionengine.model.Applicant;
 import com.digcredit.decisionengine.service.CacheService;
 import com.digcredit.decisionengine.service.DataProviderService;
-import org.drools.workshop.service.ReportService;
+import com.digcredit.decisionengine.service.ReportService;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.kie.api.cdi.KSession;
@@ -31,9 +31,6 @@ public class CreditCardVerification {
 
     private void bootstrapDrools() {
 
-//        KieServices kieServices = KieServices.Factory.get();
-//        KieContainer kContainer = kieServices.newKieContainer();
-
         kSession.setGlobal("reportService", reportService);
         kSession.setGlobal("cacheService", cacheService);
         for (Applicant a : dataProviderService.applicants()) {
@@ -43,6 +40,7 @@ public class CreditCardVerification {
         int rulesFired = kSession.fireAllRules();
         System.out.println(">>> 计执行规则总数: " + rulesFired);
         cacheService.printApplicants();
+        kSession.dispose();
 
     }
 
@@ -54,6 +52,5 @@ public class CreditCardVerification {
         app.bootstrapDrools();
 
         w.shutdown();
-        System.exit(0);
     }
 }
